@@ -1,0 +1,39 @@
+package com.example.chitchat;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class StartActivity extends AppCompatActivity {
+
+    private Button mButton;
+    private Button mLoginButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
+
+        mButton = (Button) findViewById(R.id.signup);
+        mLoginButton = (Button) findViewById(R.id.startloginbutton);
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent regIntent = new Intent(StartActivity.this, RegisterActivity.class);
+                startActivity(regIntent);
+            }
+        });
+
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent logIntent = new Intent(StartActivity.this, LoginActivity.class);
+                startActivity(logIntent);
+            }
+        });
+    }
+}

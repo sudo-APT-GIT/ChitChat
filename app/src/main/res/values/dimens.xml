@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activityPadding">16dp</dimen>
+    <dimen name="placeholderNameTextHeight">45dp</dimen>
+    <dimen name="placeholderTextHeight">30dp</dimen>
+    <dimen name="padding_10">40dp</dimen>
+    <dimen name="placeholderImage">64dp</dimen>
+</resources>

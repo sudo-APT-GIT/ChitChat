@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ChitChat</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="label">Display Name</string>
+    <string name="logout">Logout</string>
+
+</resources>
