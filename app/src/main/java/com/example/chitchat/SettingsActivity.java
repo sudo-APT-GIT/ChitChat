@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -98,16 +100,31 @@ public class SettingsActivity extends AppCompatActivity {
         String currentUid = mCurrentUser.getUid();
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUid);
+        mUserDatabase.keepSynced(true);
+
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String name = snapshot.child("name").getValue().toString();
-                String image = snapshot.child("image").getValue().toString();
+                final String image = snapshot.child("image").getValue().toString();
                 String status = snapshot.child("status").getValue().toString();
                 String thumb_image = snapshot.child("thumb_image").getValue().toString();
 
                 if (!image.equals("default")) {
-                    Picasso.get().load(image).placeholder(R.drawable.default_gravatar).into(mImage);
+                    Picasso.get().load(image)
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.default_gravatar).into(mImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Picasso.get().load(image).placeholder(R.drawable.default_gravatar).into(mImage);
+                        }
+
+                    });
                 }
 
                 mShimmerViewContainer.stopShimmerAnimation();
