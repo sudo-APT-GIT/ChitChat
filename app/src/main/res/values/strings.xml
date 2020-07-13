@@ -3,5 +3,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="label">Display Name</string>
     <string name="logout">Logout</string>
+    <string name="channel_name">notification</string>
+    <string name="channel_description">notification</string>
 
 </resources>
