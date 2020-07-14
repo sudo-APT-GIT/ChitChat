@@ -1,7 +1,6 @@
 package com.example.chitchat;
 
 import android.app.Application;
-import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
@@ -32,20 +31,22 @@ public class ChitChat extends Application {
         Picasso.setSingletonInstance(build);
 
         mAuth = FirebaseAuth.getInstance();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        if (mAuth.getCurrentUser() != null) {
+            mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
 
-        mUserDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-               if (snapshot != null) {
-                   mUserDatabase.child("online").onDisconnect().setValue(false);
-               }
-            }
+            mUserDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot != null) {
+                        mUserDatabase.child("online").onDisconnect().setValue(false);
+                    }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
     }
 }

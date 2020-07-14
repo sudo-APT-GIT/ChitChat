@@ -1,15 +1,15 @@
 package com.example.chitchat;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-
-        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        if (mAuth.getCurrentUser() != null) {
+            mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        }
 
         mToolBar = (Toolbar) findViewById(R.id.mainpageappbar);
         setSupportActionBar(mToolBar);
@@ -57,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser == null) {
             sendToStart();
-        }
-        else{
+        } else {
             mUserRef.child("online").setValue(true);
         }
     }
@@ -66,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mUserRef.child("online").setValue(false);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            mUserRef.child("online").setValue(false);
+        }
     }
 
     private void sendToStart() {
@@ -92,11 +96,11 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             sendToStart();
         }
-        if (item.getItemId() == R.id.settingbtn){
+        if (item.getItemId() == R.id.settingbtn) {
             Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(settingsIntent);
         }
-        if (item.getItemId() == R.id.alluserbtn){
+        if (item.getItemId() == R.id.alluserbtn) {
             Intent allUsersIntent = new Intent(MainActivity.this, AllUsersActivity.class);
             startActivity(allUsersIntent);
         }
