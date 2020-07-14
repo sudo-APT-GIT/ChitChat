@@ -75,7 +75,11 @@ public class ChatActivity extends AppCompatActivity {
                     if (online.equals("true")) {
                         mLastSeen.setText("Online");
                     } else {
-                        mLastSeen.setText(online);
+                        GetTimeAgo getTimeAgo = new GetTimeAgo();
+                        long lastTime = Long.parseLong(online);
+                        String lastseenTime = getTimeAgo.getTimeAgo(lastTime, getApplicationContext());
+
+                        mLastSeen.setText(lastseenTime);
                     }
                 }
                 String image = snapshot.child("image").getValue().toString();
