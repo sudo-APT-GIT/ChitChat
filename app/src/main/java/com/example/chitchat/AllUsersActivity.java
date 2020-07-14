@@ -67,7 +67,7 @@ public class AllUsersActivity extends AppCompatActivity {
                 holder.statusTV.setText(model.getStatus());
 
                 final String user_id = getRef(position).getKey();
-                Picasso.get().load(model.getImage()).into(holder.imageView);
+                Picasso.get().load(model.getImage()).placeholder(R.drawable.default_gravatar).into(holder.imageView);
 
                 holder.cLayout.setOnClickListener(new View.OnClickListener() {
                     @Override

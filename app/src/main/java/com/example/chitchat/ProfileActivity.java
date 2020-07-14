@@ -267,8 +267,8 @@ public class ProfileActivity extends AppCompatActivity {
                     final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
 
                     Map reqRecvdState = new HashMap();
-                    reqRecvdState.put("Friends/" + mCurrentUser.getUid() + "/" + user_id, currentDate);
-                    reqRecvdState.put("Friends/" + user_id + "/" + mCurrentUser.getUid(), currentDate);
+                    reqRecvdState.put("Friends/" + mCurrentUser.getUid() + "/" + user_id + "/date", currentDate);
+                    reqRecvdState.put("Friends/" + user_id + "/" + mCurrentUser.getUid() + "/date" , currentDate);
 
                     reqRecvdState.put("Friend_req/" + mCurrentUser.getUid() + "/" + user_id, null);
                     reqRecvdState.put("Friend_req/" + user_id + "/" + mCurrentUser.getUid(), null);
