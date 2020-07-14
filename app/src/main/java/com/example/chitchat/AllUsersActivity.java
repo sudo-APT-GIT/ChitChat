@@ -22,6 +22,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -122,7 +123,7 @@ public class AllUsersActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mUserRef.child("online").setValue(true);
+        mUserRef.child("online").setValue("true");
         mAdapter.startListening();
 
     }
@@ -143,7 +144,9 @@ public class AllUsersActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        mUserRef.child("online").setValue(false);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
+        }
         mShimmerViewContainer.stopShimmerAnimation();
         mShimmerViewContainer.setVisibility(View.GONE);
         super.onPause();

@@ -1,6 +1,9 @@
 package com.example.chitchat;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +12,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.adapter.FragmentViewHolder;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -26,8 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -77,30 +76,64 @@ public class FriendsFragment extends Fragment {
         mAdapter = new FirebaseRecyclerAdapter<FriendsModel, FriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull final FriendsViewHolder holder, int position, @NonNull FriendsModel model) {
-                    holder.statusTv.setText(model.getDate());
-                    String list_user_id = getRef(position).getKey();
+                holder.statusTv.setText(model.getDate());
+                final String list_user_id = getRef(position).getKey();
 
-                    mUsersDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            String username = snapshot.child("name").getValue().toString();
-                            String userImage = snapshot.child("image").getValue().toString();
+                mUsersDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        final String username = snapshot.child("name").getValue().toString();
+                         String userImage = snapshot.child("image").getValue().toString();
 
+                        if (snapshot.hasChild("online")) {
+                            String userOnline =  snapshot.child("online").getValue().toString();
+                            holder.setOnline(userOnline);
+                        }
 
-                            holder.setName(username);
-                            holder.setImage(userImage);
-                            if (snapshot.hasChild("online")){
-                                boolean userOnline = (boolean) snapshot.child("online").getValue();
-                                holder.setOnline(userOnline);
+                        holder.setName(username);
+                        holder.setImage(userImage);
+                        holder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                CharSequence options[] = new CharSequence[]{"Open Profile", "Send Message"};
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Select your option");
+                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        switch (which) {
+                                            case 0:
+                                                Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+                                                profileIntent.putExtra("user_id", list_user_id);
+                                                startActivity(profileIntent);
+                                                break;
+                                            case 1:
+                                                Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                                chatIntent.putExtra("user_id", list_user_id);
+                                                chatIntent.putExtra("user_name", username);
+                                                startActivity(chatIntent);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+                                    }
+                                });
+
+                                builder.show();
+
                             }
+                        });
 
-                        }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
+                    }
+                });
 
             }
 
@@ -151,17 +184,18 @@ public class FriendsFragment extends Fragment {
         super.onPause();
     }
 
-    private class FriendsViewHolder extends RecyclerView.ViewHolder{
+    private class FriendsViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
         TextView statusTv;
+
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            statusTv =(TextView) itemView.findViewById(R.id.alluserstatus);
+            statusTv = (TextView) itemView.findViewById(R.id.alluserstatus);
         }
 
-        public void setName(String name){
+        public void setName(String name) {
             TextView userNameTv = (TextView) mView.findViewById(R.id.allusername);
             userNameTv.setText(name);
         }
@@ -171,12 +205,11 @@ public class FriendsFragment extends Fragment {
             Picasso.get().load(userImage).placeholder(R.drawable.default_gravatar).into(userImageView);
         }
 
-        public void setOnline(boolean status){
+        public void setOnline(String status) {
             ImageView onlineDot = (ImageView) mView.findViewById(R.id.onlinedot);
-            if (status){
+            if (status.equals("true")) {
                 onlineDot.setVisibility(View.VISIBLE);
-            }
-            else{
+            } else {
                 onlineDot.setVisibility(View.INVISIBLE);
             }
         }
