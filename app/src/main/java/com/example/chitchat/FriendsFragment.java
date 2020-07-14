@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -84,8 +85,14 @@ public class FriendsFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String username = snapshot.child("name").getValue().toString();
                             String userImage = snapshot.child("image").getValue().toString();
+
+
                             holder.setName(username);
                             holder.setImage(userImage);
+                            if (snapshot.hasChild("online")){
+                                boolean userOnline = (boolean) snapshot.child("online").getValue();
+                                holder.setOnline(userOnline);
+                            }
 
                         }
 
@@ -162,6 +169,16 @@ public class FriendsFragment extends Fragment {
         public void setImage(String userImage) {
             CircleImageView userImageView = (CircleImageView) mView.findViewById(R.id.alluserimage);
             Picasso.get().load(userImage).placeholder(R.drawable.default_gravatar).into(userImageView);
+        }
+
+        public void setOnline(boolean status){
+            ImageView onlineDot = (ImageView) mView.findViewById(R.id.onlinedot);
+            if (status){
+                onlineDot.setVisibility(View.VISIBLE);
+            }
+            else{
+                onlineDot.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }

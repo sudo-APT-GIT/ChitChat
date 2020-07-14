@@ -41,6 +41,8 @@ public class SettingsActivity extends AppCompatActivity {
     private DatabaseReference mUserDatabase;
     private FirebaseUser mCurrentUser;
     private StorageReference mStorageRef;
+    private DatabaseReference mUserRef;
+
 
     private CircleImageView mImage;
     private TextView mName;
@@ -96,6 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
 
         String currentUid = mCurrentUser.getUid();
 
@@ -209,6 +212,20 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         mShimmerViewContainer.stopShimmerAnimation();
+        mUserRef.child("online").setValue(false);
         super.onPause();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mUserRef.child("online").setValue(true);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+
 }

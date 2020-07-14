@@ -24,6 +24,7 @@ public class StatusActivity extends AppCompatActivity {
 
     private TextInputEditText mStatusEditText;
     private Button mButton;
+    private DatabaseReference mUserRef;
 
     private DatabaseReference mStatusDatabase;
     private FirebaseUser mCurrentUser;
@@ -41,6 +42,7 @@ public class StatusActivity extends AppCompatActivity {
         String currentUid = mCurrentUser.getUid();
 
         mStatusDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUid);
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUser.getUid());
 
         mToolBar = (Toolbar) findViewById(R.id.status_app_bar);
         setSupportActionBar(mToolBar);
@@ -79,4 +81,18 @@ public class StatusActivity extends AppCompatActivity {
         });
 
     }
+
+
+    @Override
+    protected void onPause() {
+        mUserRef.child("online").setValue(false);
+        super.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mUserRef.child("online").setValue(true);
+    }
+
 }

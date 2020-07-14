@@ -15,6 +15,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/onlinedot"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/online"
+        app:layout_constraintBottom_toTopOf="@+id/alluserstatus"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="@+id/allusername" />
+
     <TextView
         android:id="@+id/allusername"
         android:layout_width="wrap_content"

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
@@ -32,7 +33,10 @@ public class AllUsersActivity extends AppCompatActivity {
     private RecyclerView mRecylcerView;
 
     private DatabaseReference mUsersDatabase;
+    private DatabaseReference mUserRef;
+
     private FirebaseRecyclerAdapter mAdapter;
+
     private ShimmerFrameLayout mShimmerViewContainer;
     private Context mContext;
 
@@ -42,6 +46,7 @@ public class AllUsersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_all_users);
 
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container_users);
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         mToolBar = (Toolbar) findViewById(R.id.all_users_app_bar);
         setSupportActionBar(mToolBar);
@@ -117,7 +122,9 @@ public class AllUsersActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        mUserRef.child("online").setValue(true);
         mAdapter.startListening();
+
     }
 
     @Override
@@ -125,6 +132,8 @@ public class AllUsersActivity extends AppCompatActivity {
         super.onStop();
         mAdapter.stopListening();
     }
+
+
 
     @Override
     protected void onResume() {
@@ -134,8 +143,10 @@ public class AllUsersActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        mUserRef.child("online").setValue(false);
         mShimmerViewContainer.stopShimmerAnimation();
         mShimmerViewContainer.setVisibility(View.GONE);
         super.onPause();
     }
+
 }
